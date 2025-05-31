@@ -36,10 +36,11 @@ def login():
                 mark = False
         if (mark == False):
             print("Username atau Password Salah!")
+            flag = False
             login()
         else :
             print("Login Berhasil!")
-    arr = [flag,user]
+    arr = [flag,i]
     return arr
 
 def tambahMenu():
@@ -51,7 +52,7 @@ def hitungTotal():
 def ubahHarga():
     ew= 0   
     
-def printMenu():
+def printMenu(i_user):
     global menu
     print()
     print("1. Minuman")
@@ -85,23 +86,21 @@ def printMenu():
     else :
         check = False
         print("Input Salah!")
-        printMenu()
+        printMenu(i_user)
     
-    if check :
-        print()
-        print("1. Pesan")
-        print("2. Ke halaman Menu")
+    print()
+    print("1. Pesan")
+    print("2. Ke halaman Menu")
+    pilihan = str(input("Pilihan : "))
+    while pilihan != "1" and pilihan != "2":
+        print("input salah!")
         pilihan = str(input("Pilihan : "))
-        while pilihan != "1" and pilihan != "2":
-            print("input salah!")
-            pilihan = str(input("Pilihan : "))
-        
-        if pilihan == "1" :
-            return True
-        else :
-            printMenu()
-       
-
+    
+    if pilihan == "1" :
+        checkOut(i_user)
+    else :
+        printMenu(i_user)
+    
 
 
 def tukarPoin():
@@ -161,20 +160,40 @@ def awal():
         pilihan = str(input("Pilihan : "))
     return pilihan
 
-def checkOut(nama):
+def payment(i_user):
+    global username
+    print()
+    print("Orderan")
+    print("------------------------------------------")
+    total = 0
+    for j in range(len(order[i_user])):
+        print(f"{j+1}. {order[i_user][j]} - Rp.{pay[i_user][j]}")
+        total +=pay[i_user][j]
+    print(f"Total Yang Harus Dibayar : {total}")
+    print()
+    kode = str(input("Punya Kode Promo? [ya] [tidak] :"))
+    while kode not in ["ya","tidak"]:
+        print("input salah!")
+        kode = str(input("Punya Kode Promo? [ya] [tidak] :"))
+    if kode == "ya":
+        diskon = kodePromo()
+        continuePay(diskon,total,i_user)
+    else:
+        continuePay(0.0,total,i_user)
+        
+def checkOut(i_user):
     global order,username,pay
     flag = True
     while(flag):
+        check = False
         pesan = str(input('Masukkan Pesanan:'))
         for i in range(len(menu)):
             if pesan in menu[i]:
                 check = True
                 print(f"{menu[i][1]} ditambahkan Ke pesanan Kamu")
-                for j in range (len(username)):
-                    if nama == username[j]:
-                        pay[j].append(menu[i][2])
-                        order[j].append(menu[i][1])
-                        break 
+                pay[i_user].append(menu[i][2])
+                order[i_user].append(menu[i][1])
+                riwayat[i_user].append(menu[i][1])
                 flag = False
                 break
         if check == False :
@@ -182,32 +201,74 @@ def checkOut(nama):
 
 
     ask = str (input('Pesan lagi? [ya] | [tidak] : '))
+    while ask not in ["ya","tidak"]:
+        print("input salah!")
+        ask = str (input('Pesan lagi? [ya] | [tidak] : '))
+
     if (ask == "ya"):
-        checkOut(nama)
+        checkOut(i_user)
     else :
         print()
         print('1. Pilih menu lain')
         print('2. Melakukan pembayaran')
-        pilihan = str(input('Pilihan : '))
-        while pilihan != '1' and pilihan != '2':
+        pilihan = input('Pilihan : ')
+        while pilihan not in ["1","2"]:
             print("input salah!")
-            pilihan = str(input('Pilihan : '))
+            pilihan = input('Pilihan : ')
+        print(pilihan)
         if pilihan == '1':
-            return int(pilihan)  
-        else:
-            return int(pilihan)                
+            printMenu(i_user)
+        elif pilihan == '2':
+            payment(i_user)
+              
 
-def payment(nama):
-    global username
-    print()
-    print("Orderan")
-    print("------------------------------------------")
-    for i in range (len(username)):
-        if nama == username[i]:
-            for j in range(len(order[i])):
-                print(f"{j+1}. {order[i][j]} - Rp.{pay[i][j]}")
-            break
+def kodePromo():
+    kode = str(input("Input kode promo : "))
+    while kode not in ["MURMERLACCE10","MURMERLACCE20","MURMERLACCE30","tidak jadi"]:
+        print("Kode Promo Salah! isi [tidak jadi] :")
+        kode = str(input("Input kode promo : "))
+    if kode == "MURMERLACCE10":
+        diskon = 0.1
+    elif kode == "MURMERLACCE20":
+        diskon = 0.2
+    elif kode == "MURMERLACCE30":
+        diskon = 0.3
+    elif kode == "tidak jadi":
+        diskon = 0.0
         
+    return diskon
+
+        
+    
+   
+
+def continuePay(potongan,total,save):
+    harga = total
+    potongan *= total
+    harga -= potongan
+    if harga == total:
+        print("tidak ada potongan")
+        print(f"harga yang harus dibayar : {harga} ")
+    else :
+        print(f"Diskon : Rp.{potongan}")
+        print(f"Harga setelah Diskon : Rp.{harga}")
+    bayar = int(input("Masukkan nominal pembayaran : Rp."))
+    while (bayar < harga):
+        print("Pembayaran Kurang, masukkan nominal >= harga yang harus bayar")
+        bayar = int(input("Masukkan nominal pembayaran : Rp."))
+    if bayar > harga:
+        kembalian =  bayar - harga
+        print(f"Kembalian : Rp.{kembalian}")
+        print("Pembayaran Berhasil!")
+    else :
+        print("Pembayaran Berhasil!")
+    pendapatan[save][2] += harga
+    pendapatan[save][1] += potongan
+    pendapatan[save][0] += total
+
+
+    
+
 
 
 
@@ -229,14 +290,8 @@ def main():
         if admin :
             hitungTotal()
         else :
-            flag = printMenu()
-            if flag :
-                pilih = checkOut(hasil[1])
-                if pilih == 1 :
-                    printMenu()
-                else :
-                    payment(hasil[1])
-
+            printMenu(hasil[1])
+            
     elif pilihan == 2 :
         if admin:
             tambahMenu()
@@ -247,8 +302,8 @@ def main():
             ubahHarga()
         else:
             history()
+    print (pendapatan)
             
-
 # Perintah Input    
 # Perintah Proses
     
@@ -294,6 +349,8 @@ if __name__ == '__main__':
     ["makanan", "Baked Mac and Cheese", 27000],
     ["makanan", "Avocado Toast with Poached Egg", 23000]
     ]
-    order = [[],[]]    
+    order = [[],[]]
+    riwayat = [[],[]]    
     pay = [[],[]]
+    pendapatan = [[],[0,0,0]]
     main()   
