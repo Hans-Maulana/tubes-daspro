@@ -17,6 +17,7 @@ def signup():
         order.append([])
         riwayat.append([])   
         pay.append([])
+        allpay.append([])
         pendapatan.append([0,0,0])
         poin.append([user,0])
     return True
@@ -336,7 +337,7 @@ def continuePay(potongan,total,save):
 
 def main():
     pilihan = awal()
-    
+
     if (pilihan == "1"):
         flag = signup()
         if (flag == True):
