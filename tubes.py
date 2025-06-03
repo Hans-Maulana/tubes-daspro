@@ -14,8 +14,12 @@ def signup():
     else :
         username.append(user)
         password.append(pw)
+        order.append([])
+        riwayat.append([])   
+        pay.append([])
+        pendapatan.append([0,0,0])
+        poin.append([user,0])
     return True
-
 
 def login():
     global username, password
@@ -100,16 +104,80 @@ def printMenu(i_user):
         checkOut(i_user)
     else :
         printMenu(i_user)
+
+def redeemPoin(save_i):
+    print()
+    print("1. Tukar Poin")
+    print("2. Kembali ke menu utama")
+    ask = str(input("Pilih : "))
+    while ask not in ["1","2"]:
+        print ("Input salah!")
+        ask = str(input("Pilih : "))
+    if ask == "1":
+        ada = False
+        while ada == False :
+            redeem = str(input("Tukar Poin : "))
+            for i in range(len(menu)):
+                if redeem in menu[i]:
+                    ada = True
+                    break
+            if ada :
+                if ((menu[i][2]*0.05) > poin[save_i][1]):
+                    print("Poin tidak mencukupi!")
+                    redeemPoin(save_i)
+                else:
+                    print()
+                    poin[save_i][1] -= (menu[i][2]*0.05)
+                    print (f"Kamu Berhasil Menukar Poin dengan {menu[i][1]}")
+                    print (f"Sisa poinmu : {poin[save_i][1]:.0f}pt")
+                    
+            else :
+                print("Menu Tidak Tersedia!")
+                print()
+    else:
+        home(False,save_i)
+
+def tukarPoin(save_i):
+    print("Penukaran Poin")
+    print("==================================================")
+    print()
+    print("Menu Non Coffee")
+    print("--------------------------------------------------")
+    for i in range(len(menu)):
+            if "noncoffee" in menu[i]:
+                print(f"{menu[i][1]:<40} {menu[i][2]*0.05:.0F} Poin")
+    print()
+    print("Menu Coffee")
+    print("--------------------------------------------------")
+    for i in range(len(menu)):
+            if "coffee" in menu[i]:
+                print(f"{menu[i][1]:<40} {menu[i][2]*0.05:.0F} Poin")
+    print()
+    print("Menu Makanan")
+    print("-------------------------------------------------")
+    for i in range(len(menu)):
+            if "makanan" in menu[i]:
+                print(f"{menu[i][1]:<40} {menu[i][2]*0.05:.0F} Poin")
+    print()
+    print("Menu Dessert")
+    print("-------------------------------------------------")
+    for i in range(len(menu)):
+        if "dessert" in menu[i]:
+            print(f"{menu[i][1]:<40} {menu[i][2]*0.05:.0F} Poin")
+    print("=================================================")
+    print(f"Poin Mu : {poin[save_i][1]}pt")
+    redeemPoin(save_i)
     
+def history(save_i):
+    for i in range (len(riwayat[save_i])):
+        print(f"{i+1}. {riwayat[save_i][i]} ----------- Rp.{allpay[save_i][i]}") 
+    print("---------------------------------------------------------------------")
+    print(f"Total Harga :",pendapatan[save_i][0])
+    print(f"Total Potongan :",pendapatan[save_i][2])
+    print(f"Total Yang Dibayar :",pendapatan[save_i][1])
 
 
-def tukarPoin():
-    ew = 0
-
-def history():
-    ew = 0
-
-def home(admin):
+def home(admin,i_user):
     if admin :
         print()
         print("Pilihan Menu")
@@ -128,7 +196,7 @@ def home(admin):
             return int(pilihan)
         else :
             print("Input Salah!")
-            home()
+            home(admin,i_user)
     else :
         print()
         print("Pilihan Menu")
@@ -142,12 +210,12 @@ def home(admin):
         elif pilihan == "2":
             return int(pilihan)
         elif pilihan == "3":
-            return int(pilihan)
+            history(i_user)
         elif pilihan == "4":
             awal()
         else :
             print("Input Salah!")
-            home()
+            home(admin,i_user)
 
 def awal():
     print("==================================")
@@ -193,12 +261,11 @@ def checkOut(i_user):
                 print(f"{menu[i][1]} ditambahkan Ke pesanan Kamu")
                 pay[i_user].append(menu[i][2])
                 order[i_user].append(menu[i][1])
-                riwayat[i_user].append(menu[i][1])
+                
                 flag = False
                 break
         if check == False :
             print("Menu tidak tersedia!")
-
 
     ask = str (input('Pesan lagi? [ya] | [tidak] : '))
     while ask not in ["ya","tidak"]:
@@ -221,7 +288,6 @@ def checkOut(i_user):
         elif pilihan == '2':
             payment(i_user)
               
-
 def kodePromo():
     kode = str(input("Input kode promo : "))
     while kode not in ["MURMERLACCE10","MURMERLACCE20","MURMERLACCE30","tidak jadi"]:
@@ -237,10 +303,6 @@ def kodePromo():
         diskon = 0.0
         
     return diskon
-
-        
-    
-   
 
 def continuePay(potongan,total,save):
     harga = total
@@ -265,17 +327,16 @@ def continuePay(potongan,total,save):
     pendapatan[save][2] += harga
     pendapatan[save][1] += potongan
     pendapatan[save][0] += total
+    poin[save][1] += (harga//20000)
+    riwayat[save] += order[save]
+    allpay[save] += pay[save]
+    order[save] = []
+    pay[save] = []
+    home(False,save)
 
-
-    
-
-
-
-
-    
 def main():
     pilihan = awal()
-
+    
     if (pilihan == "1"):
         flag = signup()
         if (flag == True):
@@ -285,7 +346,7 @@ def main():
         hasil = login()
         admin = hasil[0]
 
-    pilihan = home(admin)
+    pilihan = home(admin,hasil[1])
     if (pilihan == 1):
         if admin :
             hitungTotal()
@@ -296,24 +357,18 @@ def main():
         if admin:
             tambahMenu()
         else:
-            tukarPoin()
+            tukarPoin(hasil[1])
     elif pilihan == 3 :
         if admin:
             ubahHarga()
         else:
             history()
-    print (pendapatan)
-            
-# Perintah Input    
-# Perintah Proses
-    
-# Perintah Output
     return 0
 
 if __name__ == '__main__':   
     username = ["admin","noval"]
     password = ["admin123","noval123"]
-    poin = [[None],["noval",100]]
+    poin = [[None],["noval",100000]]
     menu = [
     ["coffee", "Espresso", 15000],
     ["coffee", "Cappuccino", 18000],
@@ -351,6 +406,7 @@ if __name__ == '__main__':
     ]
     order = [[],[]]
     riwayat = [[],[]]    
+    allpay = [[],[]]
     pay = [[],[]]
     pendapatan = [[],[0,0,0]]
     main()   
