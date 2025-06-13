@@ -23,7 +23,7 @@ def signup():
     return True
 
 def login():
-    global username, password
+    global username, password,layer
     print()
     print("Sign In")
     user = str(input("Username : "))
@@ -46,6 +46,7 @@ def login():
         else :
             print("Login Berhasil!")
     arr = [flag,i]
+    layer = 2
     return arr
 
 def tambahMenu():
@@ -107,6 +108,7 @@ def printMenu(i_user):
         printMenu(i_user)
 
 def redeemPoin(save_i):
+    global layer
     print()
     print("1. Tukar Poin")
     print("2. Kembali ke menu utama")
@@ -136,7 +138,7 @@ def redeemPoin(save_i):
                 print("Menu Tidak Tersedia!")
                 print()
     else:
-        home(False,save_i)
+        layer = 2
 
 def tukarPoin(save_i):
     print("Penukaran Poin")
@@ -170,12 +172,13 @@ def tukarPoin(save_i):
     redeemPoin(save_i)
     
 def history(save_i):
+    print()
     for i in range (len(riwayat[save_i])):
         print(f"{i+1}. {riwayat[save_i][i]} ----------- Rp.{allpay[save_i][i]}") 
     print("---------------------------------------------------------------------")
     print(f"Total Harga :",pendapatan[save_i][0])
-    print(f"Total Potongan :",pendapatan[save_i][2])
-    print(f"Total Yang Dibayar :",pendapatan[save_i][1])
+    print(f"Total Potongan :",pendapatan[save_i][1])
+    print(f"Total Yang Dibayar :",pendapatan[save_i][2])
 
 
 def home(admin,i_user):
@@ -227,7 +230,7 @@ def awal():
     while(pilihan != "1" and pilihan != "2"):
         print("Input salah!")
         pilihan = str(input("Pilihan : "))
-    return pilihan
+    return int(pilihan)
 
 def payment(i_user):
     global username
@@ -328,52 +331,59 @@ def continuePay(potongan,total,save):
     pendapatan[save][2] += harga
     pendapatan[save][1] += potongan
     pendapatan[save][0] += total
-    poin[save][1] += (harga//20000)
+    poin[save][1] += (total//200)
     riwayat[save] += order[save]
     allpay[save] += pay[save]
     order[save] = []
     pay[save] = []
-    home(False,save)
+    
 
 def main():
-    pilihan = awal()
+    global layer
+    stop = False
+    while stop != True :
+        if layer == 1 :
+            pilihan = awal()
 
-    if (pilihan == "1"):
-        flag = signup()
-        if (flag == True):
-            hasil = login()
-            admin = hasil[0]
-    else :
-        hasil = login()
-        admin = hasil[0]
-
-    pilihan = home(admin,hasil[1])
-    if (pilihan == 1):
-        if admin :
-            hitungTotal()
-        else :
-            printMenu(hasil[1])
-            
-    elif pilihan == 2 :
-        if admin:
-            tambahMenu()
-        else:
-            tukarPoin(hasil[1])
-    elif pilihan == 3 :
-        if admin:
-            ubahHarga()
-        else:
-            history()
+            if (pilihan == 1):
+                flag = signup()
+                if (flag == True):
+                    hasil = login()
+                    admin = hasil[0]
+            else :
+                hasil = login()
+                admin = hasil[0]
+        elif layer == 2 :
+            pilihan = home(admin,hasil[1])
+            if (pilihan == 1):
+                if admin :
+                    hitungTotal()
+                else :
+                    printMenu(hasil[1])
+                    
+            elif pilihan == 2 :
+                if admin:
+                    tambahMenu()
+                else:
+                    tukarPoin(hasil[1])
+            elif pilihan == 3 :
+                if admin:
+                    ubahHarga()
+                else:
+                    history()
+            elif pilihan == 4 :
+                layer = 1
     return 0
 
-if __name__ == '__main__':   
+if __name__ == '__main__': 
+    layer = 1
     username = ["admin","noval"]
     password = ["admin123","noval123"]
     poin = [[None],["noval",100000]]
     menu = [
     ["coffee", "Espresso", 15000],
     ["coffee", "Cappuccino", 18000],
-    ["coffee", "Café Latte", 18000],
+    ["coffee", "Cafe Latte", 18000],
     ["coffee", "Caramel Macchiato", 20000],
     ["coffee", "Iced Americano", 15000],
 
