@@ -8,6 +8,87 @@
 # hasil : variabel penyimpan hasil return dari fungsi yang dipanggil (arr)
 # admin : variabel penyimpan variabel hasil dari indeks ke 0 (int)
 
+def aturKode():
+    global kupon
+    print()
+    print("="*100)
+    print("📦  PENGATURAN KODE PROMO".center(100))
+    print("="*100)
+    
+    print()
+    print("🎟️  Kode Promo Tersedia:")
+    kosong = True
+    for i in range(len(kupon)):
+        if kupon[i][0] != "TIDAK JADI": 
+            if kupon[i][0] is not None :
+                print(f"  🔹 {kupon[i][0]}   -   Potongan: {kupon[i][1]*100:.0f}%")
+                kosong = False
+    if kosong:
+        print("  (Belum ada kode promo yang tersedia)")
+    print()
+    print("1️⃣  Tambah Kode Promo")
+    print("2️⃣  Hapus Kode Promo")
+    print("3️⃣  🔙 Kembali ke Halaman Utama")
+
+    pilihan = input("\n📌 Pilih Menu [1/2/3]: ")
+    while pilihan not in ["1", "2", "3"]:
+        print("⚠️  Input tidak valid. Coba lagi.")
+        pilihan = input("📌 Pilih Menu [1/2/3]: ")
+
+    # Menambah kode promo
+    if pilihan == "1":
+        while True:
+            promo = input("\n🆕 Masukkan Kode Promo Baru: ").upper()
+            potongan = input("💸 Masukkan Potongan (dalam persen, contoh 10): ")
+            while not potongan.isdigit():
+                print("⚠️  Potongan harus berupa angka.")
+                potongan = input("💸 Masukkan Potongan (contoh 10): ")
+            potongan_baru = int(potongan) / 100
+
+            sudah_ada = False
+            for i in range(len(kupon)):
+                if kupon[i][0] is not None and promo == kupon[i][0].upper():
+                    sudah_ada = True
+                    break
+            if sudah_ada:
+                print("⚠️  Kode promo sudah tersedia. Coba lagi.")
+            else:
+                kupon.append([promo, potongan_baru])
+                print(f"✅ Kode promo '{promo}' berhasil ditambahkan!")
+                break
+
+   
+    elif pilihan == "2":
+        if kosong:
+            print()
+            print("⚠️  Tidak ada kode promo yang bisa dihapus.")
+            return
+        while True:
+            print()
+            promo = input("❌ Masukkan Kode Promo yang ingin dihapus: ").upper()
+            ditemukan = False
+            for i in range(len(kupon)):
+                if kupon[i] is not None and promo == kupon[i][0].upper():
+                    ditemukan = True
+                    break
+            if not ditemukan:
+                print("⚠️  Kode promo tidak ditemukan. Coba lagi.")
+            else:
+                konfirmasi = input(f"🔐 Yakin ingin menghapus '{promo}'? [ya/tidak]: ").lower()
+                while konfirmasi not in ["ya", "tidak"]:
+                    print("⚠️  Input salah!")
+                    konfirmasi = input("🔐 Yakin ingin menghapus? [ya/tidak]: ").lower()
+                if konfirmasi == "ya":
+                    kupon[i][0] = None
+                    kupon[i][1] = None
+                    print(f"🗑️  Kode promo '{promo}' berhasil dihapus.")
+                else:
+                    print("❎  Penghapusan dibatalkan.")
+                break
+    else:
+        print()
+        print("🔙 Kembali ke halaman utama...")          
+
 # Kamus Data Lokal
 # user : variabel input username pendafataran akun (str)
 # pw : variabel input password pendaftaran akun (str)
@@ -15,9 +96,9 @@
 def signup():
     global username, password
     print()
-    print("="*40)
-    print(f" 📋  SELAMAT DATANG DI MENU SIGN UP  📋 ")
-    print("="*40)
+    print("="*100)
+    print(f"📋  SELAMAT DATANG DI MENU SIGN UP  📋 ".center(100))
+    print("="*100)
 
     user = str(input("🔹 Buat Username : "))
     pw = str(input("🔒 Buat Password : "))
@@ -38,7 +119,7 @@ def signup():
         poin.append([user, 0])
         print()
         print("✅ Berhasil mendaftar! Selamat datang,", user)
-        print("-"*40)
+        print("-"*100)
     return True
 
 # Kamus Data Lokal
@@ -51,9 +132,9 @@ def signup():
 def login():
     global username, password, layer
     print()
-    print("="*40)
-    print("🔐  LOGIN - MASUK KE AKUN ANDA".center(40))
-    print("="*40)
+    print("="*100)
+    print("🔐  LOGIN - MASUK KE AKUN ANDA".center(100))
+    print("="*100)
     mark = False
     while not mark :
         user = str(input("👤 Username : "))
@@ -64,6 +145,7 @@ def login():
             print()
             print("✅ Login sebagai Admin berhasil!")
             mark = True
+            i = 0
         else:
             for i in range(len(username)):
                 if user == username[i] and pw == password[i]:
@@ -96,9 +178,9 @@ def tambahMenu(admin, i_user):
     global menu, layer
     while True:
         print()
-        print("-"*40)
-        print(f"{'':<9}➕  TAMBAH MENU BARU")
-        print("-"*40)
+        print("="*100)
+        print(f"➕  TAMBAH MENU BARU".center(100))
+        print("="*100)
         print("1️⃣  Makanan")
         print("2️⃣  Minuman")
         print("3️⃣  Dessert")
@@ -157,28 +239,32 @@ def tambahMenu(admin, i_user):
 def hitungTotal():
     global riwayat, allpay, total, subtotal, layer, pendapatan
     print()
-    print("-"*50)
-    print("📊  REKAP HASIL PENDAPATAN".center(50))
-    print("-"*50)
+    print("-"*100)
+    print("📊  REKAP HASIL PENDAPATAN".center(100))
+    print("-"*100)
 
     diskon = 0
 
     for i in range(1, len(riwayat)):  
         print()
         print(f"👤 Username : {username[i]}")
-        print("-" * 40)
-        print(f"{'🍽️  Nama Barang':<25} {'💵 Harga'}")
-        for j in range(len(riwayat[i])):
-            print(f"{riwayat[i][j]:<25} Rp. {allpay[i][j]:,}")
-            total += allpay[i][j]
-        print()
-        print(f"🎁 Total Diskon     : Rp. {pendapatan[i][1]:,}")
-        print(f"🧾 Total Pembayaran : Rp. {pendapatan[i][2]:,}")
-        print("-" * 40)
-        diskon += pendapatan[i][1]
-    print()
-    print(F"💼 TOTAL PENDAPATAN BERSIH : Rp. {total - diskon}")
-    print("-"*50)
+        print("-" * 100)
+        if not riwayat[i]:
+            print("💴 Belum ada Transaksi")
+        else:
+            print(f"{'🍽️  Nama Barang':<25} {'💵 Harga'}")
+            for j in range(len(riwayat[i])):
+                print(f"   {riwayat[i][j]:<22} Rp. {allpay[i][j]:,}")
+                total += allpay[i][j]
+            print()
+            print(f"🎁 Total Diskon     : Rp. {pendapatan[i][1]:,.0f}")
+            print(f"🧾 Total Pembayaran : Rp. {pendapatan[i][2]:,.0f}")
+            print("-" * 100)
+            diskon += pendapatan[i][1]
+            print()
+            print(F"💼 TOTAL PENDAPATAN BERSIH : Rp. {total - diskon:,.0f}")
+            
+    print("-"*100)
     layer = 2
 
 # Kamus Data Lokal
@@ -195,9 +281,9 @@ def ubahHarga(admin, i_user):
     global menu, layer
     while True:
         print()
-        print("="*50)
-        print("💵  UBAH HARGA MENU".center(50))
-        print("="*50)
+        print("="*100)
+        print("💵  UBAH HARGA MENU".center(100))
+        print("="*100)
         print("1️⃣  Minuman")
         print("2️⃣  Makanan")
         print("3️⃣  Dessert")
@@ -209,24 +295,24 @@ def ubahHarga(admin, i_user):
             print("☕ Menu Coffee:")
             for i in range(len(menu)):
                 if "noncoffee" in menu[i]:
-                    print(f" - {menu[i][1]:<20} Rp. {menu[i][2]}")
+                    print(f" - {menu[i][1]:<20} Rp. {menu[i][2]:,}")
             print()
             print("🥤 Menu Non-Coffee:")
             for i in range(len(menu)):
                 if "coffee" in menu[i]:
-                    print(f" - {menu[i][1]:<20} Rp. {menu[i][2]}")
+                    print(f" - {menu[i][1]:<20} Rp. {menu[i][2]:,}")
         elif pilihan == "2":
             print()
             print("🍽️  Menu Makanan:")
             for i in range(len(menu)):
                 if "makanan" in menu[i]:
-                    print(f" - {menu[i][1]:<40} Rp. {menu[i][2]}")
+                    print(f" - {menu[i][1]:<100} Rp. {menu[i][2]:,}")
         elif pilihan == "3":
             print()
             print("🍰 Menu Dessert:")
             for i in range(len(menu)):
                 if "dessert" in menu[i]:
-                    print(f" - {menu[i][1]:<30} Rp. {menu[i][2]}")
+                    print(f" - {menu[i][1]:<30} Rp. {menu[i][2]:,}")
         elif pilihan == "4":
             print()
             print("🔙 Kembali ke Home...")
@@ -281,9 +367,9 @@ def printMenu(i_user):
     else :
         flag = False
     print()
-    print("="*50)
-    print("🍴 PILIH KATEGORI MENU".center(50))
-    print("="*50)
+    print("="*100)
+    print("🍴 PILIH KATEGORI MENU".center(100))
+    print("="*100)
     print("1️⃣  Minuman")
     print("2️⃣  Makanan")
     print("3️⃣  Dessert")
@@ -297,24 +383,24 @@ def printMenu(i_user):
         print("🥤 NON-COFFEE:")
         for i in range(len(menu)):
             if "noncoffee" in menu[i]:
-                print(f" - {menu[i][1]:<20} Rp. {menu[i][2]}")
+                print(f" - {menu[i][1]:<40} Rp. {menu[i][2]:,}")
         print()
         print("☕ COFFEE:")
         for i in range(len(menu)):
             if "coffee" in menu[i]:
-                print(f"- {menu[i][1]:<20} Rp. {menu[i][2]}")
+                print(f"- {menu[i][1]:<40} Rp. {menu[i][2]:,}")
     elif pilihan == "2":
         print()
         print("🍽️  MAKANAN:")
         for i in range(len(menu)):
             if "makanan" in menu[i]:
-                print(f" - {menu[i][1]:<40} Rp. {menu[i][2]}")
+                print(f" - {menu[i][1]:<40} Rp. {menu[i][2]:,}")
     elif pilihan == "3":
         print()
         print("🍰 DESSERT:")
         for i in range(len(menu)):
             if "dessert" in menu[i]:
-                print(f" - {menu[i][1]:<30} Rp. {menu[i][2]}")
+                print(f" - {menu[i][1]:<40} Rp. {menu[i][2]:,}")
     elif pilihan == "4" and flag:
         layer = 2
         return
@@ -346,7 +432,7 @@ def redeemPoin(save_i):
     global layer
     print()
     print("🎁 PENUKARAN POIN")
-    print("-"*40)
+    print("-"*100)
     print("1️⃣  Tukar Poin")
     print("2️⃣  🔙 Kembali ke menu utama")
     
@@ -388,7 +474,7 @@ def redeemPoin(save_i):
 def tukarPoin(save_i):
     print()
     print("🎁 DAFTAR MENU YANG DAPAT DITUKAR POIN")
-    print("="*55)
+    print("-"*100)
 
     kategori = {
         "noncoffee": "🥤 Non-Coffee",
@@ -400,13 +486,13 @@ def tukarPoin(save_i):
     for k in kategori:
         print()
         print(f"{kategori[k]}")
-        print("-"*50)
+        print("-"*100)
         for i in range(len(menu)):
             if menu[i][0] == k:
                 poin_diperlukan = menu[i][2] * 0.05
                 print(f" - {menu[i][1]:<40} {poin_diperlukan:.0f} Poin")
     print()
-    print("-"*55)
+    print("-"*100)
     print(f"🪙  Poinmu saat ini: {poin[save_i][1]:.0f} pt")
     redeemPoin(save_i)
 
@@ -417,17 +503,17 @@ def tukarPoin(save_i):
 def history(save_i):
     print()
     print("📜 RIWAYAT PEMBELIAN")
-    print("-"*50)
+    print("-"*100)
 
     if not allpay[save_i]:
         print("😌 Kamu belum pernah melakukan pembelian.")
     else:
         for i in range(len(riwayat[save_i])):
             print(f"{i+1}. {riwayat[save_i][i]:<30} Rp. {allpay[save_i][i]:,}")
-        print("-"*50)
-        print(f"💵 Total Harga       : Rp. {pendapatan[save_i][0]:,}")
-        print(f"🎁 Total Potongan    : Rp. {pendapatan[save_i][1]:,}")
-        print(f"🧾 Total yang Dibayar: Rp. {pendapatan[save_i][2]:,}")
+        print("-"*100)
+        print(f"💵 Total Harga       : Rp. {pendapatan[save_i][0]:,.0f}")
+        print(f"🎁 Total Potongan    : Rp. {pendapatan[save_i][1]:,.0f}")
+        print(f"🧾 Total yang Dibayar: Rp. {pendapatan[save_i][2]:,.0f}")
 
 # Kamus Data Lokal
 # admin, i_user : variabel parameter
@@ -437,30 +523,31 @@ def history(save_i):
 def home(admin, i_user):
     if admin:
         print()
-        print("="*40)
+        print("="*100)
         print("🏠 MENU UTAMA - ADMIN")
-        print("="*40)
+        print("="*100)
         print("1. 📊 Hitung Total Pendapatan")
         print("2. ➕ Tambah Menu")
         print("3. 📝 Ubah Harga Menu")
-        print("4. 🚪 LogOut")
-        print("-"*40)
+        print("4. 🎟️  Atur Kode Promo")
+        print("5. 🚪 LogOut")
+        print("-"*100)
         pilihan = str(input("👉 Pilihan Anda: "))
-        if pilihan in ["1", "2", "3", "4"]:
+        if pilihan in ["1", "2", "3", "4","5"]:
             return int(pilihan)
         else:
             print("⚠️ Input tidak valid!")
-            return home(admin, i_user)
+            return 
     else:
         print()
-        print("="*40)
+        print("="*100)
         print("🏠 MENU UTAMA - PENGGUNA")
-        print("="*40)
+        print("="*100)
         print("1. 🍽️  Lihat Menu")
         print("2. 🎁 Tukar Poin")
         print("3. 📜 History Pembelian")
         print("4. 🚪 LogOut")
-        print("-"*40)
+        print("-"*100)
         pilihan = str(input("👉 Pilihan Anda: "))
         if pilihan == "1":
             return int(pilihan)
@@ -470,9 +557,11 @@ def home(admin, i_user):
             history(i_user)
         elif pilihan == "4":
             return int(pilihan)
+        elif pilihan == "5":
+            return int(pilihan)
         else:
             print("⚠️ Input tidak valid!")
-            return home(admin, i_user)
+            return 
 
 # Kamus Data Lokal
 # pilihan : variabel input pilihan fitur sign-up dan sign-in
@@ -480,15 +569,16 @@ def home(admin, i_user):
 # sudah pernah dibuat.
 def awal():
     print()
-    print("="*40)
-    print("🛍️  SELAMAT DATANG DI LACCE COFFEE SHOP")
-    print("="*40)
+    print("="*100)
+    print("🛍️  SELAMAT DATANG DI LACCE COFFEE SHOP".center(100))
+    print("="*100)
     print("1. ✍️  Sign Up")
     print("2. 🔐 Sign In")
-    print("-"*40)
+    print("3. 🛑 Akhiri Program")
+    print("-"*100)
     pilihan = str(input("👉 Pilihan Anda: "))
-    while pilihan not in ["1", "2"]:
-        print("⚠️ Input tidak valid!")
+    while pilihan not in ["1", "2","3"]:
+        print("⚠️  Input tidak valid!")
         pilihan = str(input("👉 Pilihan Anda: "))
     return int(pilihan)
 
@@ -507,10 +597,10 @@ def payment(i_user):
     print("-"*45)
     total_pay = 0
     for j in range(len(order[i_user])):
-        print(f"{j+1}. {order[i_user][j]:<30} Rp. {pay[i_user][j]}")
+        print(f"{j+1}. {order[i_user][j]:<30} Rp. {pay[i_user][j]:,}")
         total_pay += pay[i_user][j]
     print("-"*45)
-    print(f"💰 Total yang harus dibayar: Rp. {total_pay}")
+    print(f"💰 Total yang harus dibayar: Rp. {total_pay:,}")
     print("-"*45)
 
     kode = str(input("📦 Punya Kode Promo? [ya/tidak]: ")).lower()
@@ -577,26 +667,25 @@ def checkOut(i_user):
 # Fungsi ini berguna untuk user customer dalam menentukan kode promo yang 
 # akan digunakan.
 def kodePromo():
-    print()
-    print("🎟️  KODE PROMO TERSEDIA:")
-    print("- MURMERLACCE10 (10% off)")
-    print("- MURMERLACCE20 (20% off)")
-    print("- MURMERLACCE30 (30% off)")
-    print("- Ketik 'tidak jadi' jika batal")
+    global kupon
 
     kode = str(input("Masukkan Kode Promo: ")).upper()
-    while kode not in ["MURMERLACCE10", "MURMERLACCE20", "MURMERLACCE30", "TIDAK JADI"]:
+    kategori = []
+    for i in range(len(kupon)):
+        if kupon[i][0] is not None :
+            kategori.append(kupon[i][0])
+    while kode not in kategori:
         print("❌ Kode Promo Salah! (atau ketik 'tidak jadi')")
         kode = str(input("Masukkan Kode Promo: ")).upper()
+    for i in range (len(kupon)):
+        if kupon[i][0] != None :
+            if kode.upper() == kupon[i][0].upper():
+                break
+    diskon = kupon[i][1]
+    return diskon
+        
 
-    if kode == "MURMERLACCE10":
-        return 0.1
-    elif kode == "MURMERLACCE20":
-        return 0.2
-    elif kode == "MURMERLACCE30":
-        return 0.3
-    else: 
-        return 0.0
+    
 
 # Kamus Data Lokal
 # potongan, total, save : variabel parameter
@@ -613,22 +702,22 @@ def continuePay(potongan, total, save):
     harga_akhir = harga_awal - nilai_potongan
     print()
     print("🧾 RINCIAN PEMBAYARAN")
-    print("-" * 40)
+    print("-" * 100)
     if nilai_potongan == 0:
         print("❌ Tidak ada potongan")
     else:
-        print(f"💸 Diskon         : Rp. {nilai_potongan:.0f}")
-        print(f"💰 Total Bayar    : Rp. {harga_akhir:.0f}")
-    print("-" * 40)
+        print(f"💸 Diskon         : Rp. {nilai_potongan:,.0f}")
+        print(f"💰 Total Bayar    : Rp. {harga_akhir:,.0f}")
+    print("-" * 100)
 
     bayar = int(input("💵 Masukkan nominal pembayaran: Rp. "))
     while bayar < harga_akhir:
-        print(F"⚠️ Pembayaran kurang! Harus minimal Rp. {harga_akhir}")
+        print(F"⚠️ Pembayaran kurang! Harus minimal Rp. {harga_akhir:,.0f}")
         bayar = int(input("💵 Masukkan ulang nominal pembayaran: Rp. "))
 
     if bayar > harga_akhir:
         kembalian = bayar - harga_akhir
-        print(f"🎉 Pembayaran Berhasil! Kembalianmu: Rp. {kembalian}")
+        print(f"🎉 Pembayaran Berhasil! Kembalianmu: Rp. {kembalian:,.0f}")
     else:
         print("🎉 Pembayaran Berhasil!")
 
@@ -653,9 +742,11 @@ def main():
                 if (flag == True):
                     hasil = login()
                     admin = hasil[0]
-            else :
+            elif pilihan == 2 :
                 hasil = login()
                 admin = hasil[0]
+            else :
+                stop = True
         elif layer == 2 :
             pilihan = home(admin,hasil[1])
             if (pilihan == 1):
@@ -675,7 +766,14 @@ def main():
                 else:
                     history()
             elif pilihan == 4 :
-                layer = 1
+                if admin == False:
+                    layer = 1
+                else :
+                    aturKode()
+            elif pilihan == 5 :
+                if admin:
+                    layer = 1
+                
     return 0
 
 if __name__ == '__main__': 
@@ -700,38 +798,38 @@ if __name__ == '__main__':
     password = ["admin123","noval123"]
     poin = [[None],["noval",100000]]
     menu = [
-    ["coffee", "Espresso", 15000],
+    ["coffee", "Espresso", 110000],
     ["coffee", "Cappuccino", 18000],
     ["coffee", "Cafe Latte", 18000],
     ["coffee", "Caramel Macchiato", 20000],
-    ["coffee", "Iced Americano", 15000],
+    ["coffee", "Iced Americano", 110000],
 
     ["noncoffee", "Matcha Latte", 18000],
     ["noncoffee", "Chocolate Milkshake", 20000],
     ["noncoffee", "Taro Latte", 18000],
-    ["noncoffee", "Lemonade Sparkling", 15000],
+    ["noncoffee", "Lemonade Sparkling", 110000],
     ["noncoffee", "Strawberry Smoothie", 18000],
 
     ["dessert", "Chocolate Lava Cake", 22000],
     ["dessert", "Strawberry Cheesecake", 22000],
-    ["dessert", "Tiramisu Classic", 25000],
+    ["dessert", "Tiramisu Classic", 210000],
     ["dessert", "Banana Split", 18000],
-    ["dessert", "Churros with Chocolate Dip", 17000],
+    ["dessert", "Churros with Chocolate Dip", 110000],
     ["dessert", "Mango Sticky Rice", 20000],
     ["dessert", "Matcha Parfait", 20000],
     ["dessert", "Brownie Sundae", 20000],
     ["dessert", "Crepes Suzette", 23000],
-    ["dessert", "Affogato", 15000],
+    ["dessert", "Affogato", 110000],
 
     ["makanan", "Chicken Creamy Pasta", 30000],
     ["makanan", "Grilled Chicken Sandwich", 28000],
-    ["makanan", "Beef Burger with Fries", 35000],
-    ["makanan", "Nasi Goreng Cafe Style", 27000],
-    ["makanan", "Caesar Salad with Grilled Chicken", 27000],
+    ["makanan", "Beef Burger with Fries", 310000],
+    ["makanan", "Nasi Goreng Cafe Style", 210000],
+    ["makanan", "Caesar Salad with Grilled Chicken", 210000],
     ["makanan", "Fish & Chips", 32000],
     ["makanan", "Japanese Chicken Katsu Curry", 32000],
     ["makanan", "Creamy Mushroom Soup with Garlic Bread", 22000],
-    ["makanan", "Baked Mac and Cheese", 27000],
+    ["makanan", "Baked Mac and Cheese", 210000],
     ["makanan", "Avocado Toast with Poached Egg", 23000]
     ]
     order = [[],[]]
@@ -741,4 +839,5 @@ if __name__ == '__main__':
     pendapatan = [[],[0,0,0]]
     total = 0
     subtotal = [0,0]
+    kupon = [["MURMERLACCE10",0.1],["MURMERLACCE20",0.2],["MURMERLACCE30",0.3],["TIDAK JADI",0.0]]
     main()   
