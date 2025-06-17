@@ -18,6 +18,7 @@ def signup():
         riwayat.append([])   
         pay.append([])
         allpay.append([])
+        subtotal.append(0)
         pendapatan.append([0,0,0])
         poin.append([user,0])
     return True
@@ -51,7 +52,7 @@ def login():
     return arr
 
 def tambahMenu(admin,i_user):
-    global menu
+    global menu,layer
     while True:
         print()
         print("=== Tambah Menu Baru ===")
@@ -78,7 +79,7 @@ def tambahMenu(admin,i_user):
         elif pilihan == "3":
             kategori = "dessert"
         elif pilihan == "4":
-            return 
+            layer = 2 
         else:
             print("Pilihan tidak valid. Coba lagi.")
 
@@ -94,13 +95,38 @@ def tambahMenu(admin,i_user):
 
         ulang = input("Tambah menu lagi? [ya] | [tidak] : ").lower()
         if ulang != 'ya':
-            home(admin,i_user)
+            layer = 2
     
 def hitungTotal():
-    ew= 0   
+    global riwayat,allpay,total,subtotal,layer,pendapatan
+    print()
+    print("Hasil Pendapatan :")   
+    print("===========================================")
+    total = 0
+    diskon = 0
+    for i in range (len(riwayat)-1):
+        i += 1
+        print()
+        print("Username :",username[i])
+        print("------------------------------")
+        print(f"{'Nama Barang' :<20} Harga")
+        for j in range(len(riwayat[i])):
+            print(f"{riwayat[i][j]:<20} {allpay[i][j]}")
+            total += allpay[i][j]
+        
+        print(f"Total diskon : Rp. {pendapatan[i][1]}")
+        print(f"Total Pembayaran : Rp. {pendapatan[i][2]} ")
+        print("------------------------------")
+        diskon += pendapatan[i][1]
+    print(f"Total pendapatan : Rp. {total-diskon}")
+    layer = 2
+    return
+    
+
+
 
 def ubahHarga(admin,i_user):
-    global menu
+    global menu,layer
 
     while True:
         print()
@@ -137,7 +163,7 @@ def ubahHarga(admin,i_user):
                 if "dessert" in menu[i]:
                     print(f"{menu[i][1]:<30} Rp.{menu[i][2]}")
         elif pilihan == "4":
-            return
+            layer = 2
         else :
             check = False
             print("Input Salah!")
@@ -150,7 +176,7 @@ def ubahHarga(admin,i_user):
             for i in range(len(menu)):
                 if ganti in menu[i]:
                     check = True
-                    print(f"Menu yang dipilih: {menu[i][1]} (Harga saat ini: Rp{menu[i][2]})")
+                    print(f"Menu yang dipilih: {menu[i][1]} (Harga saat ini: Rp. {menu[i][2]})")
                     flag = False
                     break
             if check == False :
@@ -172,12 +198,24 @@ def ubahHarga(admin,i_user):
 
 def printMenu(i_user):
     global menu
-    print()
-    print("1. Minuman")
-    print("2. Makanan")
-    print("3. Dessert")
+    if not order[i_user]:
+        flag = True
+    else :
+        flag = False
+    if flag :
+        print()
+        print("1. Minuman")
+        print("2. Makanan")
+        print("3. Dessert")
+        print("4. Kembali Ke halaman utama")
+    else :
+        print()
+        print("1. Minuman")
+        print("2. Makanan")
+        print("3. Dessert")
     pilihan = str(input("Pilihan : "))
     check = True
+    
     if pilihan == "1":
         print()
         print("Menu Non Coffee")
@@ -201,6 +239,9 @@ def printMenu(i_user):
         for i in range(len(menu)):
             if "dessert" in menu[i]:
                 print(f"{menu[i][1]:<30} Rp.{menu[i][2]}")
+    elif pilihan == "4" and flag == True:
+        layer = 2
+        return
     else :
         check = False
         print("Input Salah!")
@@ -285,12 +326,16 @@ def tukarPoin(save_i):
     
 def history(save_i):
     print()
-    for i in range (len(riwayat[save_i])):
-        print(f"{i+1}. {riwayat[save_i][i]} ----------- Rp.{allpay[save_i][i]}") 
-    print("---------------------------------------------------------------------")
-    print(f"Total Harga :",pendapatan[save_i][0])
-    print(f"Total Potongan :",pendapatan[save_i][1])
-    print(f"Total Yang Dibayar :",pendapatan[save_i][2])
+    if not allpay[save_i] :
+        print("Kamu belum pernah melakukan pembelian nih🤗")
+    else:
+        for i in range (len(riwayat[save_i])):
+            print(f"{i+1}. {riwayat[save_i][i]} ----------- Rp.{allpay[save_i][i]}") 
+        print("---------------------------------------------------------------------")
+        print(f"Total Harga :",pendapatan[save_i][0])
+        print(f"Total Potongan :",pendapatan[save_i][1])
+        print(f"Total Yang Dibayar :",pendapatan[save_i][2])
+    return
 
 
 def home(admin,i_user):
@@ -328,7 +373,7 @@ def home(admin,i_user):
         elif pilihan == "3":
             history(i_user)
         elif pilihan == "4":
-            awal()
+            return int(pilihan)
         else :
             print("Input Salah!")
             home(admin,i_user)
@@ -374,7 +419,7 @@ def checkOut(i_user):
         for i in range(len(menu)):
             if pesan in menu[i]:
                 check = True
-                print(f"{menu[i][1]} ditambahkan Ke pesanan Kamu")
+                print(f"{menu[i][1]} ditambahkan ke pesanan Kamu")
                 pay[i_user].append(menu[i][2])
                 order[i_user].append(menu[i][1])
                 
@@ -469,7 +514,7 @@ def main():
             pilihan = home(admin,hasil[1])
             if (pilihan == 1):
                 if admin :
-                    hitungTotal(admin,hasil[1])
+                    hitungTotal()
                 else :
                     printMenu(hasil[1])
                     
@@ -532,4 +577,6 @@ if __name__ == '__main__':
     allpay = [[],[]]
     pay = [[],[]]
     pendapatan = [[],[0,0,0]]
+    total = 0
+    subtotal = [0,0]
     main()   
