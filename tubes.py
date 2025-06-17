@@ -8,6 +8,16 @@
 # hasil : variabel penyimpan hasil return dari fungsi yang dipanggil (arr)
 # admin : variabel penyimpan variabel hasil dari indeks ke 0 (int)
 
+# Kamus Data Lokal
+# kosong : variabel boolean
+# i : variabel pengendali loop
+# pilihan : variabel input pilihan menu (str)
+# promo : variabel input kode promo yang akan ditambah (str)
+# potongan : variabel input nominal persen potong dari kode yang baru ditambah (str)
+# potongan_baru : variabel yang menyimpan nilai persen dari potongan (int)
+# sudah_ada : variabel boolean
+# Fungsi ini berguna untuk user admin dalam menambah atau menghapus
+# kode promo yang tersedia.
 def aturKode():
     global kupon
     print()
@@ -35,13 +45,12 @@ def aturKode():
         print("⚠️  Input tidak valid. Coba lagi.")
         pilihan = input("📌 Pilih Menu [1/2/3]: ")
 
-    # Menambah kode promo
     if pilihan == "1":
         while True:
             promo = input("\n🆕 Masukkan Kode Promo Baru: ").upper()
             potongan = input("💸 Masukkan Potongan (dalam persen, contoh 10): ")
-            while not potongan.isdigit():
-                print("⚠️  Potongan harus berupa angka.")
+            while not potongan.isdigit() or int(potongan) < 1 or int(potongan) > 100:
+                print("⚠️  Potongan tidak valid.")
                 potongan = input("💸 Masukkan Potongan (contoh 10): ")
             potongan_baru = int(potongan) / 100
 
@@ -209,13 +218,13 @@ def tambahMenu(admin, i_user):
             break
         else:
             print()
-            print("⚠️ Pilihan tidak valid. Silakan coba lagi.")
+            print("⚠️  Pilihan tidak valid. Silakan coba lagi.")
             continue
         print()
         nama = input("📝 Nama Menu : ")
         harga = input("💰 Harga (Rp): ")
         while not harga.isdigit():
-            print("   ⚠️ Harga harus berupa angka.")
+            print("   ⚠️  Harga harus berupa angka.")
             harga = input("💰 Harga (Rp): ")
         harga = int(harga)
         
@@ -320,7 +329,7 @@ def ubahHarga(admin, i_user):
             break
         else:
             print()
-            print("⚠️ Input tidak valid. Silakan coba lagi.")
+            print("⚠️  Input tidak valid. Silakan coba lagi.")
             continue
 
         
@@ -339,7 +348,7 @@ def ubahHarga(admin, i_user):
         
         harga_input = input("💰 Masukkan harga baru: ")
         while not harga_input.isdigit():
-            print("⚠️ Harga harus berupa angka.")
+            print("⚠️  Harga harus berupa angka.")
             harga_input = input("💰 Masukkan harga baru: ")
         harga_baru = int(harga_input)
 
@@ -411,7 +420,7 @@ def printMenu(i_user):
     print("2️⃣  🔙 Kembali ke Menu")
     pilihan = input("📌 Pilihan: ")
     while pilihan not in ["1", "2"]:
-        print("⚠️ Input salah!")
+        print("⚠️  Input salah!")
         pilihan = input("📌 Pilihan: ")
 
     if pilihan == "1":
@@ -436,7 +445,7 @@ def redeemPoin(save_i):
     
     ask = input("📌 Pilih: ")
     while ask not in ["1", "2"]:
-        print("⚠️ Input salah!")
+        print("⚠️  Input salah!")
         ask = input("📌 Pilih: ")
 
     if ask == "1":
@@ -534,7 +543,7 @@ def home(admin, i_user):
         if pilihan in ["1", "2", "3", "4","5"]:
             return int(pilihan)
         else:
-            print("⚠️ Input tidak valid!")
+            print("⚠️  Input tidak valid!")
             return 
     else:
         print()
@@ -555,10 +564,8 @@ def home(admin, i_user):
             history(i_user)
         elif pilihan == "4":
             return int(pilihan)
-        elif pilihan == "5":
-            return int(pilihan)
         else:
-            print("⚠️ Input tidak valid!")
+            print("⚠️  Input tidak valid!")
             return 
 
 # Kamus Data Lokal
@@ -607,7 +614,7 @@ def payment(i_user):
 
     kode = str(input("📦 Punya Kode Promo? [ya/tidak]: ")).lower()
     while kode not in ["ya", "tidak"]:
-        print("⚠️ Input tidak valid!")
+        print("⚠️  Input tidak valid!")
         kode = str(input("📦 Punya Kode Promo? [ya/tidak]: ")).lower()
     
     if kode == "ya":
@@ -637,7 +644,7 @@ def checkOut(i_user):
                 check = True
                 jumlah = input(f"📦 Berapa {menu[i][1]} yang ingin kamu pesan? ")
                 while not jumlah.isdigit() or int(jumlah) <= 0:
-                    print("⚠️ Input salah")
+                    print("⚠️  Input salah")
                     jumlah = input(f"📦 Berapa {menu[i][1]} yang ingin kamu pesan? ")
 
                 jumlah = int(jumlah)
@@ -654,11 +661,11 @@ def checkOut(i_user):
                 flag = False
                 break
         if not check:
-            print("⚠️ Menu tidak tersedia!")
+            print("⚠️  Menu tidak tersedia!")
 
     ask = str(input("🔁 Pesan lagi? [ya] / [tidak]: ")).lower()
     while ask not in ["ya", "tidak"]:
-        print("⚠️ Input salah!")
+        print("⚠️  Input salah!")
         ask = str(input("🔁 Pesan lagi? [ya] / [tidak]: ")).lower()
 
     if ask == "ya":
@@ -670,7 +677,7 @@ def checkOut(i_user):
         print("2. 💳 Melakukan pembayaran")
         pilihan = input("👉 Pilihan Anda: ")
         while pilihan not in ["1", "2"]:
-            print("⚠️ Input salah!")
+            print("⚠️  Input salah!")
             pilihan = input("👉 Pilihan Anda: ")
         if pilihan == "1":
             printMenu(i_user)
@@ -705,7 +712,7 @@ def kodePromo():
 # harga_awal : variabel penyimpan nilai total (int)
 # nilai_potongan : variabel total potongan pembelian yang didapatkan (int)
 # harga_akhir : harga setelah total dikurangi potongan (int)
-# bayar : variabel input nilai yang diberikan customer untuk membayar (int)
+# bayar : variabel input nilai yang diberikan customer untuk membayar
 # kembalian : variabel untuk menyimpan nilai kembalian (int)
 # Fungsi ini berguna untuk user customer dalam membayar total harga pesanan
 # telah dipesan
@@ -725,14 +732,14 @@ def continuePay(potongan, total, save):
 
     bayar = input("💵 Masukkan nominal pembayaran: Rp. ")
     while not bayar.isdigit():
-        print("⚠️ Harga harus berupa angka.")
+        print("⚠️  Harga harus berupa angka.")
         bayar = input("💰 Masukkan harga baru: ")
     bayar = int(bayar)
     while bayar < harga_akhir:
-        print(F"⚠️ Pembayaran kurang! Harus minimal Rp. {harga_akhir:,.0f}")
+        print(F"⚠️  Pembayaran kurang! Harus minimal Rp. {harga_akhir:,.0f}")
         bayar = input("💵 Masukkan ulang nominal pembayaran: Rp. ")
         while not bayar.isdigit():
-            print("⚠️ Harga harus berupa angka.")
+            print("⚠️  Harga harus berupa angka.")
             bayar = input("💰 Masukkan harga baru: ")
         bayar = int(bayar)
 
