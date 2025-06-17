@@ -30,7 +30,7 @@ def aturKode():
     print("2️⃣  Hapus Kode Promo")
     print("3️⃣  🔙 Kembali ke Halaman Utama")
 
-    pilihan = input("\n📌 Pilih Menu [1/2/3]: ")
+    pilihan = input("📌 Pilih Menu [1/2/3]: ")
     while pilihan not in ["1", "2", "3"]:
         print("⚠️  Input tidak valid. Coba lagi.")
         pilihan = input("📌 Pilih Menu [1/2/3]: ")
@@ -185,7 +185,6 @@ def tambahMenu(admin, i_user):
         print("2️⃣  Minuman")
         print("3️⃣  Dessert")
         print("4️⃣  🔙 Kembali ke Home")
-        print()
         pilihan = str(input("📌 Pilih kategori menu (1-4): "))
 
         if pilihan == "1":
@@ -289,7 +288,6 @@ def ubahHarga(admin, i_user):
         print("2️⃣  Makanan")
         print("3️⃣  Dessert")
         print("4️⃣  🔙 Kembali ke Home")
-        print()
         pilihan = input("📌 Pilihan Anda (1-4): ")
         if pilihan == "1":
             print()
@@ -376,7 +374,6 @@ def printMenu(i_user):
     print("3️⃣  Dessert")
     if flag:
         print("4️⃣  🔙 Kembali ke halaman utama")
-    print()
     pilihan = input("📌 Pilihan: ")
 
     if pilihan == "1":
